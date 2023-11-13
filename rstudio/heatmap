@@ -1,0 +1,32 @@
+# Install and load the required packages:
+install.packages("leaflet")
+install.packages("MASS")
+library(leaflet)
+library(MASS)
+
+# load data
+rawdata <- read.csv("/Users/nickchien/Downloads/rawdata.csv")
+
+# find rows not empty
+complete_rows <- complete.cases(rawdata$LATITUDE, rawdata$LONGITUDE)
+
+# new table with non-empty LATITUDE & LONGITUDE
+filtered_data <- rawdata[complete_rows, ]
+
+# assign to x and y
+x_coordinates <- filtered_data$LONGITUDE
+y_coordinates <- filtered_data$LATITUDE
+
+# Create a data frame with the coordinates:
+data <- data.frame(x = x_coordinates, y = y_coordinates)
+
+# Generate the kernel density estimation (KDE):
+kde <- kde2d(data$x, data$y)
+
+# Generate the heatmap overlay on a map:
+heat_map <- leaflet() %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addHeatmap(data = data, lng = ~x, lat = ~y, blur = 20, max = 0.5)
+
+# Visualize
+heat_map

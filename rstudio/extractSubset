@@ -1,0 +1,15 @@
+# extract partial data
+library(readr)
+
+input_file <- "/Users/nickchien/Downloads/xyData.csv"
+output_file <- "/Users/nickchien/Downloads/xyDataTop.csv"
+data <- read.csv(input_file)
+
+# select amount of data required
+subset_data <- data[1:1000, ]
+
+# filter those data without coordinates
+subset_data <- subset(subset_data, !apply(subset_data == 0, 1, any))
+
+# output result
+write.csv(subset_data, output_file)
