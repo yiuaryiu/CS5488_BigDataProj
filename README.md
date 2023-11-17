@@ -1,10 +1,11 @@
 # CS5488_BigDataProj
 
-### Subject:
+### Subject: Traffic Black Spot Detection with DBSCAN and other big data techniques
 
-### Project Member:
+### Project Group 5
 
 ### Folder Description:
+- sklearn - include the jupyter notebook for the model selection
 - scala - include all the scala code for development
 - rstudio - R command for generating visualisations
 - results - final visualisation results
