@@ -5,7 +5,7 @@
 ### Project Group 5
 
 ### Folder Description:
-- sklearn - include the jupyter notebook for the model selection
+- sklearn - include the jupyter notebook for the model selection experiment
 - scala - include all the scala code for development
 - rstudio - R command for generating visualisations
 - results - final visualisation results
