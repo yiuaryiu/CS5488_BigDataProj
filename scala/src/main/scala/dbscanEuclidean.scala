@@ -1,3 +1,4 @@
+// Simple dbcan implementation with euclidean distance
 //import org.apache.spark.ml.clustering.KMeans
 //import org.apache.spark.ml.evaluation.ClusteringEvaluator
 //import org.apache.spark.ml.feature.VectorAssembler

@@ -1,3 +1,4 @@
+// This implementation uses batch processing
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 import java.io.FileWriter

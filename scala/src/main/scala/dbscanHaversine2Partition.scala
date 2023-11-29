@@ -10,12 +10,14 @@ import scala.math._
 
 object DbscanHaversine2 {
   def main(args: Array[String]) {
+    // Step 1: Start Spark
     println("Start spark")
     val spark = SparkSession.builder()
       .appName("DBSCAN Example")
       .master("local[*]") // Set the master URL based on your cluster configuration
       .getOrCreate()
 
+    // Step 2: Read data from CSV file
     val data: DataFrame = spark.read
       .format("csv")
       .option("header", "true") // Specify if the CSV file has a header row
@@ -25,12 +27,14 @@ object DbscanHaversine2 {
     println("xyData.csv data:")
     data.show()
 
+    // Step 3: Set DBSCAN parameters
     val eps = 5
     val minPoints = 50
 
     println("param eps:", eps)
     println("param minPoints:", minPoints)
 
+    // Step 4: Convert DataFrame to RDD of (x, y) tuples
     // x = LONGITUDE
     // y = LATITUDE
     // Convert DataFrame to RDD of (x, y) tuples
@@ -39,6 +43,7 @@ object DbscanHaversine2 {
       .map(row => (row.getDouble(1), row.getDouble(0)))
       .cache() // Cache the RDD for reuse
 
+    // Step 5: Define haversine distance function
     def toRadians(degrees: Double): Double = degrees * (Math.PI / 180)
 
     def haversineDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double = {
@@ -57,6 +62,7 @@ object DbscanHaversine2 {
       distance
     }
 
+    // Step 6: Get haversine neighbors for a given point
     def getHaversineNeighbors(point: (Double, Double), points: Broadcast[Array[(Double, Double)]], eps: Double): Array[(Double, Double)] = {
 //      val broadcastEps: Broadcast[Double] = spark.sparkContext.broadcast(eps)
 
@@ -67,7 +73,7 @@ object DbscanHaversine2 {
       }
     }
 
-    // Function to get the cluster center point given a list of points
+    // Step 7: Calculate cluster center given a list of points
     def calculateClusterCenter(points: Iterable[(Double, Double)]): (Double, Double) = {
       val numPoints = points.size
       val sumX = points.map(_._1).sum
@@ -75,7 +81,7 @@ object DbscanHaversine2 {
       (sumX / numPoints, sumY / numPoints)
     }
 
-    // Function to perform DBSCAN clustering
+    // Step 8: Perform DBSCAN clustering
     def dbscan(points: RDD[(Double, Double)], eps: Double, minPoints: Int): Set[(Double, Double)] = {
       var clusterId = 0
       val visited = scala.collection.mutable.Set.empty[(Double, Double)]
@@ -138,10 +144,11 @@ object DbscanHaversine2 {
       clusterCenters
     }
 
+    // Step 9: Call DBSCAN function to get cluster centers
     val clusterCenters = dbscan(points, eps, minPoints)
     println("Number of clusters:", clusterCenters.size)
 
-    // Save the cluster centers to a CSV file
+    // Step 10: Save cluster centers to a CSV file
     val writer = new FileWriter("/Users/nickchien/Downloads/clusterCenters.csv") // Replace with your desired file path
     val csvWriter = new CSVWriter(writer)
     val header = Array("Latitude", "Longitude")
@@ -152,6 +159,7 @@ object DbscanHaversine2 {
     }
     csvWriter.close()
 
+    // Step 11: Stop Spark
     spark.stop()
   }
 }

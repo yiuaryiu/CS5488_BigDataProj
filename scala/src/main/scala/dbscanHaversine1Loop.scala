@@ -1,3 +1,4 @@
+// This implementation uses for loop to perform dbscan
 import org.apache.spark.sql.{SaveMode, DataFrame, SparkSession}
 import java.io.FileWriter
 import au.com.bytecode.opencsv.CSVWriter
